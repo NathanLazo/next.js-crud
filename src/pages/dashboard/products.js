@@ -1,11 +1,11 @@
-import { Fragment, useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import { CheckIcon } from '@heroicons/react/solid';
 import Modal from '@common/Modal';
 import FormProduct from '@components/FormProduct';
 
-export default function products() {
+export default function Products() {
   const [open, setOpen] = useState(false);
-  const [products, setProducts] = useState([]);
+  const [products] = useState([]);
 
   return (
     <>
