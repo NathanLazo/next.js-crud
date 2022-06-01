@@ -1,8 +1,10 @@
 import { useRef } from 'react';
+import { useRouter } from 'next/router';
+import { addProduct, updateProduct } from '@services/api/products';
 
-export default function FormProduct() {
+export default function FormProduct({ setOpen, setAlert, product }) {
     const formRef = useRef(null);
-
+    const router = useRouter();
     const handleSubmit = (event) => {
         event.preventDefault();
         const formData = new FormData(formRef.current);
@@ -13,7 +15,34 @@ export default function FormProduct() {
             categoryId: parseInt(formData.get('category')),
             images: [formData.get('images').name],
         };
-        console.log(data);
+
+        if (product) {
+            updateProduct(product.id, data)
+                .then(() => {
+                    alert('Produto atualizado com sucesso!');
+                    router.push('/dashboard/products');
+                });
+        } else {
+            addProduct(data)
+                .then(() => {
+                    setAlert({
+                        active: true,
+                        message: 'Product added successfully',
+                        type: 'success',
+                        autoClose: false,
+                    });
+                    setOpen(false);
+                })
+                .catch((error) => {
+                    setAlert({
+                        active: true,
+                        message: error.message,
+                        type: 'error',
+                        autoClose: false,
+                    });
+                    setOpen(false);
+                });
+        }
     };
 
     return (
@@ -25,19 +54,19 @@ export default function FormProduct() {
                             <label htmlFor="title" className="block text-sm font-medium text-gray-700">
                                 Title
                             </label>
-                            <input type="text" name="title" id="title" className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" />
+                            <input defaultValue={product?.title} type="text" name="title" id="title" className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" />
                         </div>
                         <div className="col-span-6 sm:col-span-3">
                             <label htmlFor="price" className="block text-sm font-medium text-gray-700">
                                 Price
                             </label>
-                            <input type="number" name="price" id="price" className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" />
+                            <input defaultValue={product?.price} type="number" name="price" id="price" className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" />
                         </div>
                         <div className="col-span-6">
                             <label htmlFor="category" className="block text-sm font-medium text-gray-700">
                                 Category
                             </label>
-                            <select id="category" name="category" autoComplete="category-name" className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            <select defaultValue={product?.category} id="category" name="category" autoComplete="category-name" className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                 <option value="1">Clothes</option>
                                 <option value="2">Electronics</option>
                                 <option value="3">Furniture</option>
@@ -50,7 +79,7 @@ export default function FormProduct() {
                             <label htmlFor="description" className="block text-sm font-medium text-gray-700">
                                 Description
                             </label>
-                            <textarea name="description" id="description" autoComplete="description" rows="3" className="form-textarea mt-1 block w-full mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" />
+                            <textarea defaultValue={product?.description} name="description" id="description" autoComplete="description" rows="3" className="form-textarea mt-1 block w-full focus:ring-indigo-500 focus:border-indigo-500 shadow-sm sm:text-sm border-gray-300 rounded-md" />
                         </div>
                         <div className="col-span-6">
                             <div>
@@ -63,7 +92,7 @@ export default function FormProduct() {
                                         <div className="flex text-sm text-gray-600">
                                             <label htmlFor="images" className="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
                                                 <span>Upload a file</span>
-                                                <input id="images" name="images" type="file" className="sr-only" />
+                                                <input defaultValue={product?.images} id="images" name="images" type="file" className="sr-only" />
                                             </label>
                                             <p className="pl-1">or drag and drop</p>
                                         </div>
