@@ -16,7 +16,7 @@ This project is a CRUD (Create, Read, Update, and Delete) application built usin
 Clone the project
 
 ```bash
-  git clone https://github.com/NathanLazo/next.js-crud
+  git clone https://github.com/NathanLazo/next.js-crud.git
 ```
 
 Go to the project directory
